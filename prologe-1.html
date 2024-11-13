@@ -1,9 +1,8 @@
+
 <!DOCTYPE html>
 <html lang="pt-BR" charset="UTF-8">
   <head>
-    <title>Test One</title>
-    <meta name="robots" content="noindex, nofollow">
-    <meta name="googlebot" content="noindex, nofollow">
+    <title>Rede de servidores da Min</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <style>
@@ -55,8 +54,8 @@ body {
     </style>
   </head>
   <body>
-    <button onclick="window.reload()">
-Reiniciar Computador
+    <button onclick="start_game()">
+Start Game
 </button>
 <canvas id="view" width="640" height="480"></canvas>
   </body>
@@ -98,6 +97,15 @@ var Game = {
   }
 }
 
+var draw_text_rows = function(rows,x,y,style){
+  ctx.fillStyle = style[1]
+  ctx.font = style[0]
+  var size = style[2]
+  for(var i=0;i<rows.length;i++){
+    ctx.fillText(rows[i],x,y+(i*size))
+  }
+}
+
 /* Menu Scene */
 var menu_setup = false
 var menu_draw = function(gctx){
@@ -119,32 +127,42 @@ var terminal_object = {
   home: false,
   curr: function(engine,self){
     if(!self.home)self.home = self.curr
-    ctx.fillText("Painel de controle: nenhum comando ativado.",25,150)
-    ctx.fillText("Pressione [0] para exibir a última transmissão.",25,175)
-    ctx.fillText("Pressione [1] para verificar o estado atual.",25,200)
-    ctx.fillText("Pressione [2] para entrar no sistema.",25,225)
-    if(engine.keys[0])self.curr = self.fns[0]
-    if(engine.keys[1])self.curr = self.fns[1]
-    if(engine.keys[2])self.curr = end_game
+    draw_text_rows([
+    "Painel de controle: nenhum comando selecionado.",
+    "",
+    "Pressione [1] para exibir a última transmissão.",
+    "Pressione [2] para verificar o estado atual.",
+    "Pressione [3] para entrar no sistema.",
+    "",
+    "                         v0.2"
+    ],25,150,["20px monospace","#0f0",25])
+    if(engine.keys[1])self.curr = self.fns[0]
+    if(engine.keys[2])self.curr = self.fns[1]
+    if(engine.keys[3])self.curr = end_game
   },
   fns: [
   function(engine,self){
-    ctx.fillText("Transmissão n°2634: Seleção de Aura",25,150)
-    ctx.fillText("De acordo com os registros, a aluna n°423 Aurora Niobe\n",
-                 25,175)
-    ctx.fillText("O desempenho deve ser analizado nesta prova, e\n"
-                ,25,275)
-    ctx.fillText("deve se esperar ótimos resultados.",25,300)
-    ctx.fillText("teve um desempenho ótimo, assim foi selecionada para\n",25,200)
-    ctx.fillText("ser uma possivel candidata para a equipe n°12.",25,225)
-    ctx.fillText("pressione [Espaço] para voltar",25,350)
+    draw_text_rows([
+    "Transmissão n°2634: Seleção de Aura",
+    "De acordo com os registros, a aluna n°423 Aurora Niobe\n",
+    "teve um desempenho ótimo, assim foi selecionada para\n",
+    "ser uma possivel candidata para a equipe n°12.",
+    "",
+    "O desempenho deve ser analizado nesta prova, e\n",
+    "deve se esperar ótimos resultados.",
+    "",
+    "pressione [Espaço] para voltar"
+    ],25,150,["20px monospace","#0f0",25])
     if(engine.keys[' '])self.curr = self.home
   },
   function(engine,self){
-    ctx.fillText("Integridade da rede de servidores da Min Corp. :",25,150)
-    ctx.fillText("Conexão com a rede: ~9"+(Math.random()*9)+"%",25,175)
-    ctx.fillText("Conexão com o sistema: ~"+(Math.random()*79)+"%",25,200)
-    ctx.fillText("pressione [Espaço] para voltar.",25,250)
+    draw_text_rows([
+    "Integridade da rede de servidores da Min Corp. :",
+    "Conexão com a rede: ~9"+(Math.random()*9)+"%",
+    "Conexão com o sistema: ~"+(Math.random()*79)+"%",
+    "",
+    "pressione [Espaço] para voltar."
+    ],25,150,["20px monospace","#0f0",25])
     if(engine.keys[' '])self.curr = self.home
   }
   ]
@@ -156,13 +174,10 @@ var terminal_scene = function(engine){
 var end_game = function(engine){
   canvas.style.background = "#f00"
   ctx.fillStyle = "#000"
-  ctx.font = "20px sans-serif"
+  ctx.font = "20px monospace"
   ctx.fillText("ACESSO NEGADO",
                220,250)
   engine.stop()
-  setTimeout(function(){
-    window.close()
-  })
 }
 
 Game.scene = menu_draw
